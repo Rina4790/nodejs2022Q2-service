@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { db } from 'src/dataBase/db';
 import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -7,7 +8,7 @@ const uuidValid = (uuid: string): boolean => uuidValidate(uuid);
 
 @Injectable()
 export class ArtistsService {
-  artists = [];
+  artists = db.artists;
 
   getAll() {
     return this.artists;
