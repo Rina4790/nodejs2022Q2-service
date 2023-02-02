@@ -11,13 +11,11 @@ export class UpdatePasswordDto {
   newPassword: string; // new password
 }
 
-
 export class User {
-	id: string;
-	login: string;
-	password: string;
-	version: number;
-	createdAt: number;
-	updatedAt: number;
- 
- }
+  id: string;
+  login: string;
+  password: string;
+  version: number;
+  createdAt: number;
+  updatedAt: number;
+}

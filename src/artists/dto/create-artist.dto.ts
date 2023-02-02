@@ -3,8 +3,8 @@ export class CreateArtistDto {
   grammy: boolean;
 }
 
-export class Artist{
-	id: string;
-	name: string;
+export class Artist {
+  id: string;
+  name: string;
   grammy: boolean;
 }
