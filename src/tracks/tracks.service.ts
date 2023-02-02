@@ -64,6 +64,9 @@ export class TracksService {
     const i = this.tracks.findIndex((track) => track.id == id);
     this.tracks.splice(i, 1);
 
+    const fI = db.favs.tracks.findIndex((track) => track.id == id);
+    if (fI > -1) db.favs.tracks.splice(fI, 1);
+
     return new HttpException('Deleted', HttpStatus.NO_CONTENT);
   }
 }

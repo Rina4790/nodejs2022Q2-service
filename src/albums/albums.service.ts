@@ -64,6 +64,8 @@ export class AlbumsService {
         track.albumId = null;
       }
     });
+    const fI = db.favs.albums.findIndex((album) => album.id == id);
+    if (fI >= 0) db.favs.albums.splice(fI, 1);
 
     return new HttpException('Deleted', HttpStatus.NO_CONTENT);
   }

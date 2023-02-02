@@ -72,6 +72,8 @@ export class ArtistsService {
         album.artistId = null;
       }
     });
+    const fI = db.favs.artists.findIndex((artist) => artist.id == id);
+    if (fI > -1) db.favs.artists.splice(fI, 1);
     return new HttpException('Deleted', HttpStatus.NO_CONTENT);
   }
 }
