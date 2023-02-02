@@ -62,6 +62,16 @@ export class ArtistsService {
     if (!findArtist) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
     const i = this.artists.findIndex((artist) => artist.id == id);
     this.artists.splice(i, 1);
+    db.tracks.forEach((track) => {
+      if (track.artistId === id) {
+        track.artistId = null;
+      }
+    });
+    db.albums.forEach((album) => {
+      if (album.artistId === id) {
+        album.artistId = null;
+      }
+    });
     return new HttpException('Deleted', HttpStatus.NO_CONTENT);
   }
 }

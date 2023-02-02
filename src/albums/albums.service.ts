@@ -59,6 +59,11 @@ export class AlbumsService {
     if (!findAlbum) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
     const i = this.albums.findIndex((album) => album.id == id);
     this.albums.splice(i, 1);
+    db.tracks.forEach((track) => {
+      if (track.albumId === id) {
+        track.albumId = null;
+      }
+    });
 
     return new HttpException('Deleted', HttpStatus.NO_CONTENT);
   }
