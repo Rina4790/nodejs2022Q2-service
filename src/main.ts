@@ -14,7 +14,7 @@ async function bootstrap() {
     await readFile('./doc/api.yaml', { encoding: 'utf-8' }),
   );
   SwaggerModule.setup('api', app, document);
-
+  app.enableCors();
   await app.listen(PORT);
   console.log(PORT);
 }
