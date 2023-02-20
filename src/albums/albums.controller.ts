@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -9,16 +10,18 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
+import { AlbumEntities } from './entities/album.entities';
 
 @Controller('album')
 export class AlbumsController {
   constructor(private readonly albumServise: AlbumsService) {}
-
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  getAll() {
+  getAll() : Promise<AlbumEntities[]>{
     return this.albumServise.getAll();
   }
 
