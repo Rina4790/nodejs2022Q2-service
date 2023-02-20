@@ -2,6 +2,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 
 import * as dotenv from 'dotenv';
 import { UserEntities } from 'src/users/entities/user.entities';
+import { ArtistEntities } from 'src/artists/entities/artist.entities';
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ export const ormConfig: DataSourceOptions = {
   username,
   password,
   database,
-  entities: [UserEntities],
+  entities: [UserEntities, ArtistEntities],
   migrations: [__dirname, 'dist/**/migrations/*.js'],
   synchronize: true,
 };

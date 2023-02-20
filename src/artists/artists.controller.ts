@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -9,17 +10,19 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
+import { ArtistEntities } from './entities/artist.entities';
 
 @Controller('artist')
 export class ArtistsController {
   constructor(private readonly artistServise: ArtistsService) {}
-
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  getAll() {
-    return this.artistServise.getAll();
+  async getAll(): Promise<ArtistEntities[]> {
+    return await this.artistServise.getAll();
   }
 
   @Get(':id')

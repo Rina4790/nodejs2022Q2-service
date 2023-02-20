@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { DeleteResult, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { db } from 'src/dataBase/db';
 import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 import { CreateUserDto, UpdatePasswordDto } from './dto/create-users.dto';
@@ -16,8 +15,6 @@ export class UsersService {
 		@InjectRepository(UserEntities)
 		private readonly usersRepository: Repository<UserEntities>,
 	){}
-	
-  users = db.users;
 
   public async getAll() {
 	  const userss = await this.usersRepository.find()
