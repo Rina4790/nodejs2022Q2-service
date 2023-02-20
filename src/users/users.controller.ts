@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -9,17 +10,19 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto, UpdatePasswordDto } from './dto/create-users.dto';
+import { UserEntities } from './entities/user.entities';
 import { UsersService } from './users.service';
 
 @Controller('user')
 export class UsersController {
   constructor(private readonly userServise: UsersService) {}
-
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  getAll() {
-    return this.userServise.getAll();
+  async getAll(): Promise<UserEntities[]> {
+    return await this.userServise.getAll();
   }
 
   @Get(':id')
@@ -30,8 +33,8 @@ export class UsersController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @Header('Cache-Control', 'none')
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userServise.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto){
+    return await this.userServise.create(createUserDto);
   }
 
   @Put(':id')
