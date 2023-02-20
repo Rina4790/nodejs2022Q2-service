@@ -11,6 +11,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-tracks.dto';
+import { TrackEntities } from './entities/track.entities';
 import { TracksService } from './tracks.service';
 
 @Controller('track')
@@ -18,7 +19,7 @@ export class TracksController {
   constructor(private readonly tracksService: TracksService) {}
 
   @Get()
-  getAll() {
+  getAll(): Promise<TrackEntities[]> {
     return this.tracksService.getAll();
   }
 

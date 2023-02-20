@@ -19,7 +19,6 @@ export class UsersService {
   public async getAll() {
 	  const userss = await this.usersRepository.find()
 	  return userss
-	//   return userss.map((user)=> user.toResponse())
   }
 
   async getById(id: string) {
@@ -61,15 +60,13 @@ export class UsersService {
     }
   }
 
-  async delete(id: string) {
+  async delete(id: string): Promise<DeleteResult> {
     const valide = uuidValid(id);
-    if (!valide) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
-	  const result = await this.usersRepository.delete(id);
-	  if (result.affected === 0) {
-      return new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
-    } else {
-      return new HttpException('Deleted', HttpStatus.NO_CONTENT);
-    }
+	  if (!valide) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
+	  const findUser = await this.getById(id);
+	  if(!findUser)return null;
+	  return await this.usersRepository.delete(id);
+	  
     
   }
 }

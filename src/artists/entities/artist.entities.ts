@@ -3,10 +3,12 @@ import { IsUUID } from 'class-validator';
 import { 
 	Column,
 	Entity,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	Timestamp
 } from 'typeorm'
-// import { Track } from '../../tracks/Entities/track.entitie';
+import { TrackEntities } from '../../tracks/entities/track.entities'
+
 
 @Entity({ name: 'artists' })
 export class ArtistEntities {
@@ -20,10 +22,10 @@ export class ArtistEntities {
   @Column({ nullable: true })
   grammy: boolean;
 
-//   @OneToMany(() => Track, (track: Track) => track.artistId, {
-//     onDelete: 'SET NULL',
-//   })
-//   tracks: Track[];
+  @OneToMany(() => TrackEntities, (track: TrackEntities) => track.artistId, {
+    onDelete: 'SET NULL',
+  })
+  tracks: TrackEntities[];
 }
 
 

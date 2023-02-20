@@ -1,72 +1,63 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { db } from 'src/dataBase/db';
+import { DeleteResult, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 import { CreateTrackDto } from './dto/create-tracks.dto';
+import { TrackEntities } from './entities/track.entities';
 
 const uuidValid = (uuid: string): boolean => uuidValidate(uuid);
 
 @Injectable()
 export class TracksService {
-  tracks = db.tracks;
+	constructor(
+		@InjectRepository(TrackEntities)
+		private trackRepository: Repository<TrackEntities>,
+	 ) {}
 
   getAll() {
-    return this.tracks;
+    return this.trackRepository.find();
   }
 
-  getById(id: string) {
+  async getById(id: string) {
     const valide = uuidValid(id);
     if (!valide) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
-    const findTrack = this.tracks.find((track) => track.id == id);
+    const findTrack = await this.trackRepository.findOne({ where: { id: id } });
     if (!findTrack) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
     return findTrack;
   }
 
-  create(trackDto: CreateTrackDto) {
-    const { name, duration } = trackDto;
-    if (typeof name === 'string' && typeof duration === 'number') {
-      const newTrack = {
-        id: uuidv4(),
-        ...trackDto,
-      };
-      this.tracks.push(newTrack);
-      return newTrack;
-    } else {
-      throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
-    }
+  async create(trackDto: CreateTrackDto) {
+
+	  const newTrack = new TrackEntities
+	  
+	  Object.assign(newTrack, trackDto);
+
+	  return await this.trackRepository.save(newTrack);
+   
   }
 
-  update(id: string, trackDto: CreateTrackDto) {
-    const { name, duration, artistId, albumId } = trackDto;
+  async update(id: string, trackDto: CreateTrackDto) {
     const valide = uuidValid(id);
     if (!valide) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
 
-    if (typeof name === 'string' && typeof duration === 'number') {
-      const findTrack = this.tracks.find((track) => track.id == id);
-      if (!findTrack)
-        throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
-
-      findTrack.name = name;
-      findTrack.duration = duration;
-      if (artistId) findTrack.artistId = artistId;
-      if (albumId) findTrack.albumId = albumId;
-      return findTrack;
-    } else {
-      throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
-    }
+      const findTrack = await this.getById(id)
+	  if (findTrack) {
+		  const { name, duration, artistId, albumId } = trackDto;
+		  if (typeof name !== 'string' || typeof duration !== 'number')throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
+		Object.assign(findTrack, trackDto);
+      return await this.trackRepository.save(findTrack);
+		}else throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
+   
   }
 
-  delete(id: string) {
+  async delete(id: string): Promise<DeleteResult> {
     const valide = uuidValid(id);
     if (!valide) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
-    const findTrack = this.tracks.find((track) => track.id == id);
+    const findTrack = await this.getById(id)
     if (!findTrack) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
-    const i = this.tracks.findIndex((track) => track.id == id);
-    this.tracks.splice(i, 1);
-
-    const fI = db.favs.tracks.findIndex((track) => track.id == id);
-    if (fI > -1) db.favs.tracks.splice(fI, 1);
-
-    return new HttpException('Deleted', HttpStatus.NO_CONTENT);
+	  
+	  return await this.trackRepository.delete(id)
   }
 }

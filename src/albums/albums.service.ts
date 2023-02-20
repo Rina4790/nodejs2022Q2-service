@@ -18,10 +18,10 @@ export class AlbumsService {
     return this.albumRepository.find();
   }
 
-  getById(id: string) {
+  async getById(id: string) {
     const valide = uuidValid(id);
     if (!valide) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
-    const findAlbum = this.albumRepository.findOne({ where: { id: id } });
+    const findAlbum = await this.albumRepository.findOne({ where: { id: id } });
     if (!findAlbum) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
     return findAlbum;
   }
@@ -33,20 +33,23 @@ export class AlbumsService {
     return await this.albumRepository.save(newAlbum);
   }
 
-  async update(id: string, albumtDto: CreateAlbumDto): Promise<AlbumEntities>  {
+	async update(id: string, albumtDto: CreateAlbumDto): Promise<AlbumEntities>  {
+		const { name, year, artistId } = albumtDto;
     const valide = uuidValid(id);
     if (!valide) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
-
+	 if (typeof name !== 'string' || typeof year !== 'number') throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
     const findAlbum = await this.getById(id);
     if (findAlbum) {
       Object.assign(findAlbum, albumtDto);
       return await this.albumRepository.save(findAlbum);
-    }
+    }else throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
   }
 
   async delete(id: string): Promise<DeleteResult> {
     const valide = uuidValid(id);
-    if (!valide) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
+	  if (!valide) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
+	  const findAlbum = await this.getById(id)
+    if (!findAlbum) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
     return await this.albumRepository.delete(id)
   }
 }

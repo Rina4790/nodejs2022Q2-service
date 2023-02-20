@@ -1,7 +1,7 @@
 
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IsUUID } from 'class-validator';
-// import { Track } from '../../tracks/Entities/track.entitie';
+import { TrackEntities } from '../../tracks/entities/track.entities'
 
 @Entity({ name: 'albums' })
 export class AlbumEntities {
@@ -21,8 +21,8 @@ export class AlbumEntities {
   
   @Column({ nullable: true })
   artistId?: string;
-//   @OneToMany(() => Track, (track: Track) => track.albumId, {
-//     onDelete: 'SET NULL',
-//   })
-//   tracks: Track[];
+  @OneToMany(() => TrackEntities, (track: TrackEntities) => track.albumId, {
+    onDelete: 'SET NULL',
+  })
+  tracks: TrackEntities[];
 }
