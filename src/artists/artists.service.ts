@@ -17,11 +17,15 @@ export class ArtistsService {
   async getAll() {
 	return await this.artistRepository.find();
   }
+	
+	async findOne(id: string) {
+		return await this.artistRepository.findOne({ where: { id: id } });
+	}
 
   async getById(id: string) {
     const valide = uuidValid(id);
     if (!valide) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
-    const findArtist = await this.artistRepository.findOne({ where: { id: id } });
+    const findArtist = await this.findOne(id);
     if (!findArtist) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
     return findArtist;
   }

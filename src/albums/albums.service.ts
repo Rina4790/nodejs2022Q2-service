@@ -17,11 +17,15 @@ export class AlbumsService {
   getAll() {
     return this.albumRepository.find();
   }
+	
+  async findOne(id: string) {
+	return await this.albumRepository.findOne({ where: { id: id } });
+}
 
   async getById(id: string) {
     const valide = uuidValid(id);
     if (!valide) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
-    const findAlbum = await this.albumRepository.findOne({ where: { id: id } });
+    const findAlbum = await this.findOne(id);
     if (!findAlbum) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
     return findAlbum;
   }

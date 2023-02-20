@@ -1,8 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { db } from 'src/dataBase/db';
 import { DeleteResult, In, Repository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 import { CreateTrackDto } from './dto/create-tracks.dto';
 import { TrackEntities } from './entities/track.entities';
@@ -20,10 +18,14 @@ export class TracksService {
     return this.trackRepository.find();
   }
 
+  async findOne(id: string) {
+	return await this.trackRepository.findOne({ where: { id: id } });
+}
+	
   async getById(id: string) {
     const valide = uuidValid(id);
     if (!valide) throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
-    const findTrack = await this.trackRepository.findOne({ where: { id: id } });
+    const findTrack = await this.findOne(id);
     if (!findTrack) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
     return findTrack;
   }
