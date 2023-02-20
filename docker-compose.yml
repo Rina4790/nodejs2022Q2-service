@@ -1,8 +1,59 @@
 version: '3.0'
 
 services:
-  my-api:
-    image: my-http
-    build: .
+  main:
+    container_name: main
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    env_file:
+      - .env
     ports:
-      - "4000:4000"
+      - ${PORT}:${PORT}
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - DB_PORT=${DB_PORT}
+      - PORT=${PORT}
+      - POSTGRES_HOST=postgres
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    command: npm run start:dev
+    depends_on:
+      - postgres
+    restart: always
+    networks:
+      - mynetwork
+
+  postgres:
+    container_name: postgres
+    image: postgres:15.1-alpine
+    build:
+      dockerfile: src/Dockerfile
+      context: .
+    env_file:
+      - .env
+    ports:
+      - ${POSTGRES_PORT}
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - DB_PORT=${DB_PORT}
+      - PORT=${PORT}
+      - POSTGRES_HOST=postgres
+    volumes:
+      - DB:${POSTGRES_DATA}
+    restart: always
+    networks:
+      - mynetwork
+
+
+volumes:
+  DB:
+
+networks:
+  mynetwork:
+    driver: bridge
