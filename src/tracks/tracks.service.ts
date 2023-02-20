@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { db } from 'src/dataBase/db';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, In, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 import { CreateTrackDto } from './dto/create-tracks.dto';
@@ -28,6 +28,10 @@ export class TracksService {
     return findTrack;
   }
 
+  async getByIds(ids: string[]) {
+	return await this.trackRepository.find({ where: { id: In(ids) } });
+ }
+	
   async create(trackDto: CreateTrackDto) {
 
 	  const newTrack = new TrackEntities

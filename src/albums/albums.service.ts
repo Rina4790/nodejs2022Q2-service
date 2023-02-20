@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, In, Repository } from 'typeorm';
 import { validate as uuidValidate } from 'uuid';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { AlbumEntities } from './entities/album.entities';
@@ -26,6 +26,10 @@ export class AlbumsService {
     return findAlbum;
   }
 
+  async getByIds(ids: string[]) {
+	return await this.albumRepository.find({ where: { id: In(ids) } });
+ }
+	
   async create(albumtDto: CreateAlbumDto) {
     const newAlbum = new AlbumEntities();
     Object.assign(newAlbum, albumtDto);

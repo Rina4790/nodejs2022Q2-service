@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, In, Repository } from 'typeorm';
 import { validate as uuidValidate } from 'uuid';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { ArtistEntities } from './entities/artist.entities';
@@ -25,6 +25,10 @@ export class ArtistsService {
     if (!findArtist) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
     return findArtist;
   }
+	
+  async getByIds(ids: string[]) {
+	return await this.artistRepository.find({ where: { id: In(ids) } });
+ }
 
   async create(artistDto: CreateArtistDto) {
     const { name, grammy } = artistDto;
