@@ -5,68 +5,39 @@
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
 
-## Downloading
+
 
 ```
 git clone {repository URL}
 ```
 
-## Installing NPM modules
-
 ```
-npm install
+git checkout docker
 ```
 
-## Running application
+
+
+***rename the evn.exapmle file to .env
+
+
 
 ```
-npm run start
+npm run docker:build
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/api.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
-
-## Testing
-
-After application running open new terminal and enter:
-
-To run all tests without authorization
-
+#### migrations
 ```
-npm run test
+npm i
 ```
-
-To run only one of all test suites
-
 ```
-npm run test -- <path to suite>
+npm run build
 ```
-
-To run all test with authorization
-
 ```
-npm run test:auth
+npm run db:create migrations/newMigration
 ```
-
-To run only specific test suite with authorization
-
 ```
-npm run test:auth -- <path to suite>
+npm run db:run
 ```
-
-### Auto-fix and format
-
 ```
-npm run lint
+npm run start:dev
 ```
-
-```
-npm run format
-```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
